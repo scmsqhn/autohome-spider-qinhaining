@@ -2,3 +2,11 @@ mongoengine
 cryptography
 pyOpenSSL
 certifi
+pandas
+web.py
+scipy
+matplotlib
+numpy
+sklearn 
+scikit-learn
+

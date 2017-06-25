@@ -140,8 +140,18 @@ def train_wb(X, y):
     :param y:X对应的y值
     :return: 返回（w，b）的向量
     """
+    print 'train_wb;'
     if np.linalg.det(X.T * X) != 0:
+        # 判断矩阵X与X.T相乘的行列式不为0,
         wb = ((X.T.dot(X).I).dot(X.T)).dot(y)
+        print "(X.T.dot(X).I)", X.T.dot(X).I
+        print '===='
+        print "(X.T.dot(X)", X.T.dot(X)
+        print '===='
+        print "((X.T.dot(X).I).dot(X.T))", ((X.T.dot(X).I).dot(X.T))
+        print '===='
+        print 'wb= ', wb 
+        print '===='
         return wb
         #获得数据的函数，其中数据下载自
 
@@ -155,28 +165,6 @@ def getdata():
         y.append(float(temp[2]))
     return (np.mat(x), np.mat(y).T)
     
-def draw(x, y, wb):
-
-    #画回归直线y = wx+b
-    a = np.linspace(0, np.max(x)) #横坐标的取值范围
-    b = wb[0] + a * wb[1]
-    plot(x, y, '.')
-    plot(a, b)
-    show()
-
-    #整体代码如下：
-
-
-def train_wb(X, y):
-    """
-    :param X:N*D的数据
-    :param y:X对应的y值
-    :return: 返回（w，b）的向量
-    """
-    if np.linalg.det(X.T * X) != 0:
-        wb = ((X.T.dot(X).I).dot(X.T)).dot(y)
-        return wb
-
 def test(x, wb):
     return x.T.dot(wb)
 
@@ -184,19 +172,19 @@ def getdata():
     x = []; y = []
     file = open("../data_collection/ex0.txt", 'r')
     for line in file.readlines():
-        print line
+        #print line
         temp = line.strip().split("\t")
         x.append([float(temp[0]),float(temp[1])])
         y.append(float(temp[2]))
-        prtutil.prt('getdata x y')
-    for ix in x:
-        print ix
-    for iy in y:
-        print iy
+        #prtutil.prt('getdata x y')
+    #for ix in x:
+        #print ix
+    #for iy in y:
+        #print iy
                 
-    print np.mat(x)
-    print np.mat(y)
-    print np.mat(y).T
+    #print np.mat(x)
+    #print np.mat(y)
+    #print np.mat(y).T
 
     return (np.mat(x), np.mat(y).T)
 

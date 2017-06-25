@@ -18,3 +18,57 @@
 ![image](https://github.com/Tachone/zhihu_spider/blob/master/career.png)
 ![image](https://github.com/Tachone/zhihu_spider/blob/master/city.png)
 ![image](https://github.com/Tachone/zhihu_spider/blob/master/title.png)
+---
+# 汽车之家爬虫
+## 使用ipproxys 搭建一个完整的爬虫框架
+## 品牌价值 车辆价格预测
+
+## 数据清洗方式 
+1. number 计入单项
+2. 非number展开选项,使用one-hot码
+
+## 关键数据项
+厂商
+发动机
+变速箱
+车身结构
+综合油耗
+车身结构
+油箱容积
+行李箱容积
+排量
+进气形式
+气缸数
+每缸气门数
+最大马力
+最大功率
+燃油标号
+档位个数
+轮胎规格
+后轮胎规格
+主副驾驶气囊
+前后排侧气囊
+前后排头部气囊
+膝部气囊
+胎压监测
+零胎压继续行驶
+安全带提示
+儿童座椅接口
+abs
+制动力分配
+刹车辅助
+牵引力控制
+车身稳定控制
+并线辅助
+车道偏离预警系统
+主动刹车
+夜视系统
+前后驻车雷达
+倒车视频
+全景摄像头
+定速巡航
+自适应巡航
+自动泊车
+发动机启停
+上坡辅助
+自动注册

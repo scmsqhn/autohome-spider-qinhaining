@@ -217,6 +217,12 @@ class Html_Parser(object):
         #num = int(round(len(tds)/len(ths)))
         addicons = soup.findAll("div", {"class":"btn_delbar"});
         num = len(addicons)
+        dl = soup.find("dl", {"class":"cont-dl"});
+        ddlist = dl.findAll("dd")
+        dddict = {}
+        for dd in ddlist:
+            print dd.find('data-key')
+            print dd.get_text()
         outths = []
         for tr in trs:
           print '===new tr====='
@@ -236,9 +242,16 @@ class Html_Parser(object):
           outths.append(thstr.encode('utf-8'))      
           print thstr
           for itd in itds:
-            tt = itd.get_text() 
-            outths.append(tt)
-            print tt
+              td_content = ""
+              spans = itd.findAll('span')
+              for span in spans:
+                  classname = span.find(attrs={'class'})
+                  if classname is not None:
+                      print classname
+                      td_content+=classname
+              td_content+=itd.get_text() 
+              outths.append(td_content)
+              #print td_content
           print '--------------'
 
 
@@ -370,8 +383,29 @@ class Html_Parser(object):
 
 if __name__=="__main__":
   print "main"
-  _Html_Parser = Html_Parser();
-  _Html_Parser.bs4html(_Html_Parser.html)
+  import json
+  #_Html_Parser = Html_Parser();
+  import os
+  import os.path
+  import chardet
+  rootdir = './'
+  for parent,dirnames,filenames in os.walk(rootdir):
+    for filename in filenames:
+      if filename.split('.')[-1]=='txt':
+        f = open(filename)
+        for line in f.readlines():
+          print type(line)
+          print chardet.detect(line)
+          todict = json.loads(line.decode('GB2312'))
+          for key in todict['result']['paramtypeitems']:
+            for item in key['paramitems']:
+              print item['name']
+              #打印出所有的功能单项
+              #为求解多元线性回归做准备
+          import time
+          time.sleep(10000)
+
+#    _Html_Parser.bs4html(_Html_Parser.html)
 
 
 
