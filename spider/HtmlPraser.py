@@ -12,7 +12,9 @@ reload(sys)
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
-
+sys.path.append('..')
+import db.MongoHelper as MongoHelper
+import util
 __author__ = 'qiye'
 from lxml import etree
 
@@ -144,7 +146,6 @@ class Html_Parser(object):
             proxy['port'] = new_port
         return proxylist
 
-
     def proxy_listPraser(self, response, parser):
         proxylist = []
         pattern = re.compile(parser['pattern'])
@@ -173,7 +174,7 @@ class Html_Parser(object):
                          'area': area, 'speed': 100}
                 proxylist.append(proxy)
             return proxylist
-            
+
     def research(self, ith):
         if type(ith) is "<class 'bs4.element.Tag'>":
             ith = ith.get_text()
@@ -213,7 +214,7 @@ class Html_Parser(object):
         for th in ths:
           print th
         '''
-        # get the length of tds and  hs 
+        # get the length of tds and  hs
         #num = int(round(len(tds)/len(ths)))
         addicons = soup.findAll("div", {"class":"btn_delbar"});
         num = len(addicons)
@@ -238,8 +239,8 @@ class Html_Parser(object):
           #nprint thstr
 #          print "======"
           import chardet
-          outths.append("###".encode('utf-8'))      
-          outths.append(thstr.encode('utf-8'))      
+          outths.append("###".encode('utf-8'))
+          outths.append(thstr.encode('utf-8'))
           print thstr
           for itd in itds:
               td_content = ""
@@ -249,7 +250,7 @@ class Html_Parser(object):
                   if classname is not None:
                       print classname
                       td_content+=classname
-              td_content+=itd.get_text() 
+              td_content+=itd.get_text()
               outths.append(td_content)
               #print td_content
           print '--------------'
@@ -276,7 +277,7 @@ class Html_Parser(object):
         import traceback
         traceback.print_exc()
         pass
- 
+
     def x2utf(self, inp):
         mtype = type(inp)
         #print inp,'type=', mtype
@@ -308,7 +309,7 @@ class Html_Parser(object):
             print ret
             print type(ret)
             _type = chardet.detect(ret)
-            return inp.decode(_type) 
+            return inp.decode(_type)
 
     def x2uni(self, inp):
         mtype = type(inp)
@@ -317,11 +318,11 @@ class Html_Parser(object):
             import chardet
             code = chardet.detect(inp)
             encode = code['encoding']
-            return inp.decode(encode) 
+            return inp.decode(encode)
         return inp
 
     def wr2xls(self, ths, filename, num):
-      cell = "cell"  
+      cell = "cell"
       import xlwt;
       import xlrd;
       from xlutils.copy import copy;
@@ -363,10 +364,10 @@ class Html_Parser(object):
       newWb = copy(oldWb);
       print newWb; #<xlwt.Workbook.Workbook object at 0x000000000315F470>
       newWs = newWb.get_sheet(0);
-      i = 0  
-      j = 0  
+      i = 0
+      j = 0
       for th in ths:
-          #print td.string, " #" 
+          #print td.string, " #"
           if th == "###":
               i = 0
               j += 1
@@ -381,31 +382,157 @@ class Html_Parser(object):
       newWb.save(fn)#gConst['xls']['fileName']);
       print "save with same name ok";
 
+    def store_data_to_mongo(self, itemdict):
+      mongohelper=MongoHelper.MongoHelper("autohome", "config")
+      mongohelper.select_colletion("config")
+      mongohelper.insert(itemdict)
+
+    def convertType(self, input, type):
+      if isinstance(input, str):
+        import chardet
+        encodetype = chardet.detect(input)['encoding']
+        #print encodetype
+        if type == "unicode":
+          return input.decode(encodetype)
+        return input.decode(encodetype).encode(type)
+      
+    def counterAnti(self, line):
+      import re
+      line = re.sub("<span class='hs_kw8_configpl'></span>", u'导', line)
+      line = re.sub("<span class='hs_kw9_configpl'></span>", u'价', line)
+      line = re.sub("<span class='hs_kw10_configpl'></span>", u'10', line)
+      line = re.sub("<span class='hs_kw11_configpl'></span>", u'万', line)
+      line = re.sub("<span class='hs_kw7_configpl'></span>", u'指', line)
+      line = re.sub("<span class='hs_kw0_configpl'></span>", u'0', line)
+      line = re.sub("<span class='hs_kw1_configpl'></span>", u'车辆型号', line)
+      line = re.sub("<span class='hs_kw2_configpl'></span>", u'东风', line)
+      line = re.sub("<span class='hs_kw6_configpl'></span>", u'商', line)      
+      line = re.sub("<span class='hs_kw12_configpl'></span>", u'微面', line)
+      line = re.sub("<span class='hs_kw13_configpl'></span>", u'综合', line)
+      line = re.sub("<span class='hs_kw14_configpl'></span>", u'油耗', line)
+      line = re.sub("<span class='hs_kw15_configpl'></span>", u'质保', line)
+      line = re.sub("<span class='hs_kw16_configpl'></span>", u'长度', line)
+      line = re.sub("<span class='hs_kw17_configpl'></span>", u'宽度', line)
+      line = re.sub("<span class='hs_kw18_configpl'></span>", u'高度', line)
+      line = re.sub("<span class='hs_kw19_configpl'></span>", u'轴距', line)
+      line = re.sub("<span class='hs_kw20_configpl'></span>", u'前', line)
+      line = re.sub("<span class='hs_kw22_configpl'></span>", u'后轮距', line)
+      line = re.sub("<span class='hs_kw23_configpl'></span>", u'离地间隙', line)
+      line = re.sub("<span class='hs_kw24_configpl'></span>", u'整备', line)
+      line = re.sub("<span class='hs_kw25_configpl'></span>", u'质量', line)
+      line = re.sub("<span class='hs_kw26_configpl'></span>", u'车门数', line)
+      line = re.sub("<span class='hs_kw27_configpl'></span>", u'后排', line)
+      line = re.sub("<span class='hs_kw28_configpl'></span>", u'油箱', line)
+      line = re.sub("<span class='hs_kw29_configpl'></span>", u'容积', line)
+      line = re.sub("<span class='hs_kw30_configpl'></span>", u'最大', line)
+      line = re.sub("<span class='hs_kw31_configpl'></span>", u'31', line)
+      line = re.sub("<span class='hs_kw32_configpl'></span>", u'后驱', line)
+      line = re.sub("<span class='hs_kw33_configpl'></span>", u'33', line)
+      line = re.sub("<span class='hs_kw34_configpl'></span>", u'悬架', line)
+      line = re.sub("<span class='hs_kw40_configpl'></span>", u'助力', line)
+      line = re.sub("<span class='hs_kw50_configpl'></span>", u'排量', line)
+      line = re.sub("<span class='hs_kw54_configpl'></span>", u'气缸', line)
+      line = re.sub("<span class='hs_kw55_configpl'></span>", u'排列', line)
+      line = re.sub("<span class='hs_kw56_configpl'></span>", u'气门', line)
+      line = re.sub("<span class='hs_kw35_configpl'></span>", u'麦迪逊', line)
+      line = re.sub("<span class='hs_kw36_configpl'></span>", u'独立', line)
+      line = re.sub("<span class='hs_kw37_configpl'></span>", u'37', line)
+      line = re.sub("<span class='hs_kw38_configpl'></span>", u'钢板', line)
+      line = re.sub("<span class='hs_kw39_configpl'></span>", u'弹簧', line)
+      line = re.sub("<span class='hs_kw41_configpl'></span>", u'承载式', line)
+      line = re.sub("<span class='hs_kw42_configpl'></span>", u'42', line)
+      line = re.sub("<span class='hs_kw43_configpl'></span>", u'盘式', line)
+      line = re.sub("<span class='hs_kw44_configpl'></span>", u'后制动器', line)
+      line = re.sub("<span class='hs_kw45_configpl'></span>", u'鼓式', line)
+      line = re.sub("<span class='hs_kw46_configpl'></span>", u'46', line)
+      line = re.sub("<span class='hs_kw47_configpl'></span>", u'规格', line)
+      line = re.sub("<span class='hs_kw48_configpl'></span>", u'轮胎', line)
+      line = re.sub("<span class='hs_kw49_configpl'></span>", u'号', line)
+      line = re.sub("<span class='hs_kw51_configpl'></span>", u'进气', line)
+      line = re.sub("<span class='hs_kw52_configpl'></span>", u'自然', line)
+      line = re.sub("<span class='hs_kw53_configpl'></span>", u'吸气', line)
+      line = re.sub("<span class='hs_kw57_configpl'></span>", u'压缩比', line)
+      line = re.sub("<span class='hs_kw58_configpl'></span>", u'配气', line)
+      line = re.sub("<span class='hs_kw59_configpl'></span>", u'机构', line)
+      line = re.sub("<span class='hs_kw60_configpl'></span>", u'缸径', line)
+      line = re.sub("<span class='hs_kw61_configpl'></span>", u'行程', line)
+      line = re.sub("<span class='hs_kw62_configpl'></span>", u'功率', line)
+      line = re.sub("<span class='hs_kw63_configpl'></span>", u'转速', line)
+      line = re.sub("<span class='hs_kw64_configpl'></span>", u'扭矩', line)
+      line = re.sub("<span class='hs_kw65_configpl'></span>", u'燃油', line)
+      line = re.sub("<span class='hs_kw66_configpl'></span>", u'京', line)
+      line = re.sub("<span class='hs_kw67_configpl'></span>", u'供油', line)
+      line = re.sub("<span class='hs_kw68_configpl'></span>", u'多点', line)
+      line = re.sub("<span class='hs_kw69_configpl'></span>", u'电喷', line)
+      line = re.sub("<span class='hs_kw70_configpl'></span>", u'缸盖', line)
+      line = re.sub("<span class='hs_kw71_configpl'></span>", u'缸体', line)
+      line = re.sub("<span class='hs_kw72_configpl'></span>", u'环保', line)
+      line = re.sub("<span class='hs_kw73_configpl'></span>", u'标准', line)
+      line = re.sub("<span class='hs_kw74_configpl'></span>", u'国', line)
+      line = re.sub("<span class='hs_kw75_configpl'></span>", u'电池', line)
+      line = re.sub("<span class='hs_kw76_configpl'></span>", u'容量', line)
+      line = re.sub("<span class='hs_kw77_configpl'></span>", u'充电', line)
+      line = re.sub("<span class='hs_kw78_configpl'></span>", u'时间', line)
+      line = re.sub("<span class='hs_kw79_configpl'></span>", u'79', line)
+      return line
+    
+    def jsonDump(self, input):
+      import json
+      return json.dumps(input, ensure_ascii=False, encoding='utf-8')
+
 if __name__=="__main__":
   print "main"
   import json
-  #_Html_Parser = Html_Parser();
+  _Html_Parser = Html_Parser();
   import os
   import os.path
   import chardet
-  rootdir = './'
+  rootdir = '../output/'
   for parent,dirnames,filenames in os.walk(rootdir):
     for filename in filenames:
+      print filename 
       if filename.split('.')[-1]=='txt':
-        f = open(filename)
+        f = open(os.path.join(rootdir, filename))
         for line in f.readlines():
-          print type(line)
-          print chardet.detect(line)
-          todict = json.loads(line.decode('GB2312'))
+          #line = _Html_Parser.counterAnti(line)
+          line = line
+          
+          #print type(line)
+          typecode = chardet.detect(line)
+          #print typecode
+          #print line
+          todict = json.loads(line.decode(typecode['encoding']).encode('utf-8'))
+          #todict = json.loads(line)
+          saveitem = {}
           for key in todict['result']['paramtypeitems']:
-            for item in key['paramitems']:
-              print item['name']
+            dictitem = {}
+            for paraitem in key['paramitems']:
+              listitem = []
+              for valitem in paraitem['valueitems']:
+                  listitem.append(_Html_Parser.counterAnti(valitem['value']))
+                  print _Html_Parser.counterAnti(paraitem['name'])
+                  print _Html_Parser.counterAnti(valitem['value'])
+              dictitem[_Html_Parser.counterAnti(paraitem['name'])] =  listitem
+            fdjxh = -1
+            for key in dictitem.keys():
+              if fdjxh < len(dictitem[key]):
+                fdjxh = len(dictitem[key])
+            #print chardet.detect(fdjxh)
+            leng = fdjxh
+            for i in range (0, leng):
+              for key in dictitem.keys():
+                saveitem[key] = dictitem[key][i]
+          _Html_Parser.store_data_to_mongo(saveitem)
+#                  dictitem[paraitem['name']] = valitem['value']
+#                  print dictitem
+#                  dumpsitem = _Html_Parser.jsonDump(dictitem)
+#                  print dumpsitem
+#                  dumpsitem = _Html_Parser.counterAnti(dumpsitem)
+#                  print dumpsitem
+
               #打印出所有的功能单项
               #为求解多元线性回归做准备
-          import time
-          time.sleep(10000)
 
 #    _Html_Parser.bs4html(_Html_Parser.html)
-
 
 

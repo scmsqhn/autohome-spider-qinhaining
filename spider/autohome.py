@@ -253,7 +253,7 @@ def get_char(js):
             \}\)\([\'\"][^\'\"]*[\'\"]\)
         """,
         re.X)
-    
+
     l = constant_function_regex6.findall(js)
     for i in l:
         function_name = re.search("""
@@ -341,6 +341,7 @@ def get_complete_text_autohome(text):
         char = char_list[index]
         return char
     text = re.sub("<span\s*class=[\'\"]hs_kw(\d+)_([^\'\"]+)[\'\"]></span>", char_replace, text)
+    #text = re.sub("<span\s*class=[\'\"]hs_kw(\d+)_configpl([^\'\"]+)[\'\"]></span>", char_replace, text)
     return text
 
 def getDiscuss(url):
@@ -378,22 +379,17 @@ def getConfig(url):
     except:
         import traceback
         print traceback.print_exc()
-        pass 
-    
+        pass
+
 def save2File(filename, input):
   f = open(filename, 'w')
   f.write(input.encode('gbk'))
   f.close()
-    
 
-    
 if __name__=="__main__":
   pass
   #爬去1000001~1005380车型
-  for i in range(1000005,1005380):
+  for i in range(1002399,1002405):
     urlto = "http://car.autohome.com.cn/config/spec/%d.html" % i
     getConfig(urlto)
-
-  
-
 
