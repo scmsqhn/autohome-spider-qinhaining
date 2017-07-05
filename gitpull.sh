@@ -1,1 +1,1 @@
-git pull https://github.com/scmsqhn/autohome-spider-qinhaining.git
+git pull git@github.com:scmsqhn/zhihu_spider.git
