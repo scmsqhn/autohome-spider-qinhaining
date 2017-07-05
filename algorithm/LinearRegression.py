@@ -216,33 +216,36 @@ def mulitiLinearRegression(xin, yin, size):
 #  X = [[6, 2], [8, 1], [10, 0], [14, 2], [18, 0]]
 #  y = [[7], [9], [13], [17.5], [18]]
   mylen = len(yin)
-  lstRandom = [0 for n in range(size)]
-  for i in range(size):
-    lstRandom[i] = random.randint(0, mylen)
+  models = [LinearRegression() for n in range(10)]
+  for j in range(10):
+    lstRandom = [0 for n in range(size)]
+    for i in range(size):
+      lstRandom[i] = random.randint(0, mylen)
     
-  x = [xin[n] for n in lstRandom]
-  y = [yin[n] for n in lstRandom]
-  model = LinearRegression()
-  model.fit(x, y)
+    x = [xin[n] for n in lstRandom]
+    y = [yin[n] for n in lstRandom]
+    print models[j]
+    models[j].fit(x, y)
   #print x,y
   
   lstRandom = [0 for n in range(size)]
   for i in range(size):
     lstRandom[i] = random.randint(0, mylen)
     
-  X_test = [xin[n] for n in lstRandom]
-  y_test = [yin[n] for n in lstRandom]
-  print '[x] \n',x,X_test,y_test,y
+  X_test = xin#[xin[n] for n in lstRandom]
+  y_test = yin#[yin[n] for n in lstRandom]
+  #print '[x] \n',x,X_test,y_test,y
   #X_test = [[8, 2], [9, 0], [11, 2], [16, 2], [12, 0]]
   #y_test = [[11], [8.5], [15], [18], [11]]
-  predictions = model.predict(X_test)
-  for i, prediction in enumerate(predictions):
+  for j in range(10):
+    predictions = models[j].predict(X_test)
+    for i, prediction in enumerate(predictions):
+      pass
+#      print('预测值: %s, 目标值: %s' % (prediction, y_test[i]))
+#      print('Predicted: %s, Target: %s' % (prediction, y_test[i]))
+    print('置信度: %.2f' % models[j].score(X_test, y_test))
+    print('R-squared: %.2f' % models[j].score(X_test, y_test))
     pass
-    print('预测值: %s, 目标值: %s' % (prediction, y_test[i]))
-    print('Predicted: %s, Target: %s' % (prediction, y_test[i]))
-  print('置信度: %.2f' % model.score(X_test, y_test))
-  print('R-squared: %.2f' % model.score(X_test, y_test))
-  pass
 
 def reSub(instr):
   import re
@@ -268,6 +271,11 @@ if __name__=="__main__":
     u"最大扭矩转速(rpm)", \
     u"发动机", u"最大功率(kW)", u"座位数(个)", u"变速箱", u"车门数(个)",  u"最大扭矩(N・m)",\
     u"挡位个数", u"最大马力(Ps)",  u"排量(L)", u"每缸气门(个)"]
+  dataMod9  = [u"厂商指导价", u"长度(mm)", u"轴距(mm)", u"气缸数(个)", u"排量(mL)", \
+    u"最大扭矩转速(rpm)", u"宽度(mm)",\
+    u"发动机", u"最大功率(kW)", u"座位数(个)", u"变速箱", u"车门数(个)",  u"最大扭矩(N・m)",\
+    u"挡位个数", u"最大马力(Ps)",  u"排量(L)", u"每缸气门(个)", \
+    u"长*宽*高(mm)", u"前轮胎规格", u"后轮胎规格", u"燃油标号"]
   dataMod = [u"厂商指导价", u"长度(mm)", u"轴距(mm)", u"气缸数(个)", u"排量(mL)", \
     u"最大扭矩转速(rpm)", u"宽度(mm)",\
     u"发动机", u"最大功率(kW)", u"座位数(个)", u"变速箱", u"车门数(个)",  u"最大扭矩(N・m)",\
@@ -310,7 +318,8 @@ if __name__=="__main__":
       lstPric[i] = lstConf[i][0]
       lstConf[i] = lstConf[i][1:]
       arraySize = i
+  print arraySize
   lstPric = np.array(lstPric[:arraySize])
   lstConf = np.array(lstConf[:arraySize])
   #print len(lstConf), len(lstPric)
-  mulitiLinearRegression(lstConf, lstPric, arraySize)
+  mulitiLinearRegression(lstConf, lstPric, 10)

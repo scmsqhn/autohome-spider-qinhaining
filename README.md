@@ -1,33 +1,12 @@
-# zhihu_spider
-### 大规模知乎用户爬虫
-* （１）使用python的request模块获取html页面，注意要修改自己的cookie，使得我们更像是使用浏览器访问
-* （２）使用xpath模块从html中提取需要的关键信息（姓名，职业，居住地，关注人等）
-* （３）使用redis作为队列，很好的解决并发和大规模数据的问题（可以分布式）
-* （４）使用bfs宽度优先搜索，使得程序得以不断扩展持续搜索用户
-* （５）数据存储至no-sql数据库：mongodb（高效轻量级并且支持并发）
-* （６）使用python的进程池模块提高抓取速度
-* （７）使用csv,pandas,matplotlib模块进行数据处理（需要完善）
+# 汽车价格预测模型
+## 汽车配置价格数据爬去
+* (１)使用python的request模块获取html页面
+* (２)使用bs4解析页面
+* (３)数据保存至mongoDB
+* (４)待爬列表和爬取列表,保存至redis
+* (５)使用numpy线性回归,预测价格
     
-### 联系作者
-* 具体可以参考我的博客：http://blog.csdn.net/nk_test/article/details/51330971
-* 运行的时候需要指定参数 ： print_data_out 表示输出至屏幕；store_data_to_mongo代表存入mongodb数据库
-  同时依赖redis,mongodb以及python的部分模块，请自行安装。
-     
-
-### 数据展示：
-![image](https://github.com/Tachone/zhihu_spider/blob/master/career.png)
-![image](https://github.com/Tachone/zhihu_spider/blob/master/city.png)
-![image](https://github.com/Tachone/zhihu_spider/blob/master/title.png)
----
-# 汽车之家爬虫
-## 使用ipproxys 搭建一个完整的爬虫框架
-## 品牌价值 车辆价格预测
-
-## 数据清洗方式 
-1. number 计入单项
-2. 非number展开选项,使用one-hot码
-
-## 关键数据项
+### 关键数据项
 厂商
 发动机
 变速箱
@@ -72,3 +51,10 @@ abs
 发动机启停
 上坡辅助
 自动注册
+
+## 优化路径
+### 目前置信度只有64%,可以从以下几个部分进行优化
+* (1) 数据准备尚不够完备,目前只引入传统汽车组件部分,仅需引入电子部分和品牌部分
+* (2) 通过分布式,进行运算后,根据置信度权重相加,求得最优解
+* (3) 增加EM模型,引入未知部分
+* (4) 增加时间模型,对上市时间对车辆售价的影响进行评估
